@@ -11,9 +11,9 @@
         public decimal Total { get; set; }
 
         // Relación con Clientes
-        public Clientes Cliente { get; set; }
+        public Clientes? Cliente { get; set; }
 
         // Relación con PedidoProductos
-        public ICollection<PedidoProductos> PedidoProductos { get; set; }
+        public ICollection<PedidoProductos>? PedidoProductos { get; set; }
     }
 }

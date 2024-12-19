@@ -17,6 +17,12 @@ namespace PruebaApp.Controller
             _configuration = configuration;
         }
 
+        [HttpGet("Prueba")]
+        public IActionResult Prueba()
+        {
+            return Ok();  
+        }
+
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginRequest request)
         {

@@ -9,6 +9,6 @@
         public DateTime FechaCreacion { get; set; }
 
         // Relación con PedidoProductos
-        public ICollection<PedidoProductos> PedidoProductos { get; set; }
+        public ICollection<PedidoProductos>? PedidoProductos { get; set; }
     }
 }

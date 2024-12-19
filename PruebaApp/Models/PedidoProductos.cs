@@ -10,8 +10,8 @@
 
 
         // Relaciones
-        public Pedidos Pedido { get; set; }
-        public Productos Producto { get; set; }
+        public Pedidos? Pedido { get; set; }
+        public Productos? Producto { get; set; }
 
     }
 }

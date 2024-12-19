@@ -32,7 +32,7 @@ namespace PruebaApp.Service
                 throw new InvalidOperationException("El email ya está registrado.");
             }
 
-            cliente.FechaRegistro = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss");
+            cliente.FechaRegistro = DateTime.Now;
             _context.clientes.Add(cliente);
             await _context.SaveChangesAsync();
             return cliente;

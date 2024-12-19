@@ -6,70 +6,62 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-
-
 var builder = WebApplication.CreateBuilder(args);
 
-//configuracion de escucha
-//builder.WebHost.UseUrls("http://0.0.0.0:80");
+// Configuración de escucha para contenedores
+builder.WebHost.UseUrls("http://0.0.0.0:80");
 
-
-//configuracion de JWT
+// Configuración de JWT
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
-    .AddJwtBearer(options =>
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
     {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = false,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-        };
-    });
+        ValidateIssuer = true,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+    };
+});
 
 builder.Services.AddAuthorization();
-/*
-//configuracion de Json para evitar ciclos de autoreferencia
+
+// Configuración de JSON para evitar ciclos de autoreferencia
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
     });
-*/
 
-
-//configuracion de EntityFrameWork core con Mysql
+// Configuración de Entity Framework Core con MySQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
         ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))));
 
-//agrega servicios 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddSwaggerGen();
-
+// Agregar servicios
 builder.Services.AddScoped<IProductoService, ProductoService>();
 builder.Services.AddScoped<IClientesService, ClienteService>();
 builder.Services.AddScoped<IPedidoService, PedidoService>();
 builder.Services.AddScoped<IPedidoProductoService, PedidoProductoService>();
 
+// Swagger para desarrollo
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-
 
 // Middleware de manejo de errores
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
-   // app.UseSwagger();
-   //app.UseSwaggerUI();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 else
 {
@@ -77,7 +69,7 @@ else
     app.UseHsts();
 }
 
-//middleware
+// Middleware
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
